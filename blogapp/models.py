@@ -13,7 +13,7 @@ class Blog(models.Model):
     posts = models.ManyToManyField('Post', blank=True, default=None)
 
     def __str__(self):
-        return "Blog #{}.".format(self.id)
+        return "{}".format(self.title)
 
 
 class Post(models.Model):
@@ -26,3 +26,7 @@ class Post(models.Model):
 
     def __str__(self):
         return "Post #{}, {}.".format(self.id, self.title)
+
+    def save(self, *args, **kwargs):
+        super(Post, self).save(*args, **kwargs)
+        self.user.blog.posts.add(self)
