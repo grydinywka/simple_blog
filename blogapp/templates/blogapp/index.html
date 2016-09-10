@@ -1,0 +1,7 @@
+{% extends "blogapp/base.html" %}
+{% load static from staticfiles %}
+
+{% block meta_title %}-Index{% endblock meta_title %}
+{% block content %}
+<a type="button" href="{% url 'user_list' %}" class="btn btn-default">USER'S LIST</a>
+{% endblock content %}
