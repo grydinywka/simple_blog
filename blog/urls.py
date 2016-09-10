@@ -19,7 +19,7 @@ from django.contrib.auth import views as auth_views
 from blogapp.views import home, login
 from blogapp.models import UserOwner
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView,TemplateView
+from django.views.generic import ListView,TemplateView,DetailView
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
@@ -30,6 +30,8 @@ urlpatterns = [
                                            template_name="blogapp/users.html",
                                            context_object_name='users')),
         name='user_list'),
-    # url(r'^blog/users/(?P<uid>\d+)/$', StudentEditView.as_view(), name="students_edit"),
+    url(r'^blog/users/(?P<pk>\d+)/$', login_required(DetailView.as_view(model=UserOwner,
+                                                         template_name="blogapp/user_posts.html",
+                                                         context_object_name='userowner')), name="user_posts"),
     url(r'^admin/', admin.site.urls),
 ]
