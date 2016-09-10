@@ -25,6 +25,7 @@
                         <h1 class="text-center">Simple blog!</h1>
                     </div>
 
+					{% block auth %}
                     <div class="col-xs-3 text-right" id="user-toolbar">
                         {% if user.is_authenticated %}
                             <p>{{ user.get_full_name|default:user.email }}</p>
@@ -35,6 +36,7 @@
 
 						{% endif %}
                     </div>
+					{% endblock auth %}
                 </div>
 
             </div>

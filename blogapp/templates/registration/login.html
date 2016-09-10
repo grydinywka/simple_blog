@@ -6,6 +6,8 @@
 
 {% block title %}Login Form{% endblock title %}
 
+{% block auth %}{% endblock auth %}
+
 {% block status_message %}
 {% if form.errors %}
   <div class="alert alert-warning" role="alert">
@@ -23,7 +25,7 @@
 	<form action="{% url 'auth_login' %}" method="post">
 
 		{% csrf_token %}
-		<input type="hidden" name="next" value="{% url 'home' %}" >
+		<input type="hidden" name="next" value="{{ next }}" >
 
 		<div class="form-group {% if form.errors.email or form.non_field_errors %}has-error{% endif %}">
 			<label for="login">Your Email</label>

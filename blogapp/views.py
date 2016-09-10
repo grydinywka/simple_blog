@@ -6,12 +6,14 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
 )
 from .forms import AuthenticationForm
 
+@login_required
 def home(request):
     return render(request, "blogapp/base.html", {})
 
@@ -56,5 +58,8 @@ def login(request, template_name='registration/login.html',
     }
     if extra_context is not None:
         context.update(extra_context)
+    # print('redirect_to')
+    # print(redirect_to)
 
     return TemplateResponse(request, template_name, context)
+

@@ -17,10 +17,19 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from blogapp.views import home, login
+from blogapp.models import UserOwner
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView,TemplateView
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     url(r'^$', home, name='home'),
-    url(r'^users/logout/$', auth_views.logout, kwargs={'next_page':'home'}, name='auth_logout'),
-    url(r'^users/login/$', login, name='auth_login'),
+    url(r'^logout/$', auth_views.logout, kwargs={'next_page':'auth_login'}, name='auth_logout'),
+    url(r'^login/$', login, name='auth_login'),
+    url(r'^blog/users/$', login_required(ListView.as_view(model=UserOwner,
+                                           template_name="blogapp/users.html",
+                                           context_object_name='users')),
+        name='user_list'),
+    # url(r'^blog/users/(?P<uid>\d+)/$', StudentEditView.as_view(), name="students_edit"),
     url(r'^admin/', admin.site.urls),
 ]

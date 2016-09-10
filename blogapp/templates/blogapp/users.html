@@ -1,0 +1,23 @@
+{% extends 'blogapp/base.html' %}
+{% load static from staticfiles %}
+
+{% block meta_title %}-Users{% endblock meta_title %}
+
+{% block title %}List of users:{% endblock title %}
+
+{% block content %}
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.email }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
