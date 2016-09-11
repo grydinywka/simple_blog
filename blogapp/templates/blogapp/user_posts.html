@@ -6,6 +6,7 @@
 {% block title %}Posts of user `{{ userowner }}`:{% endblock title %}
 
 {% block content %}
+<div><a href="{% url 'user_list' %}">BACK TO ALL USERS</a></div>
 <table class="table table-hover table-striped">
     <thead>
         <tr>
@@ -14,11 +15,11 @@
         </tr>
     </thead>
     <tbody>
-    {% for post in userowner.blog.posts.all %}
+    {% for post in posts %}
         <tr>
             <td>{{ post.id }}</td>
             <td>{{ post.title }}</td>
-            <td><a href="{% url 'post' post.id %}">show post</a> </td>
+            <td><a href="{% url 'post' post.id %}">show post</a></td>
         </tr>
     {% endfor %}
     </tbody>

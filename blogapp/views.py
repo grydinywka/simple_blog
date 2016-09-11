@@ -14,8 +14,9 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
 from crispy_forms.bootstrap import FormActions
+from django.views.generic import ListView,TemplateView,DetailView
 
-from blogapp.models import Post
+from blogapp.models import Post, UserOwner
 
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
@@ -26,7 +27,7 @@ from .forms import AuthenticationForm
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'is_posted', 'user']
+        fields = '__all__'
         exclude = ()
 
     def __init__(self, *args, **kwargs):
@@ -71,35 +72,32 @@ class PostForm(forms.ModelForm):
                 )
     no_field = forms.CharField(required=False)
 
+
 class PostUpdateView(UpdateView):
     model = Post
     template_name = "blogapp/update_create_post.html"
     form_class = PostForm
 
     def get_success_url(self):
-        messages.success(self.request, 'Post %s successfully updated!' % self.object)
+        messages.success(self.request, 'Post #%s successfully updated!' % self.object.id)
         return reverse('user_list')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
-            messages.info(request, 'Updating post %s canceled!' % self.get_object())
+            messages.info(request, 'Updating post #%s canceled!' % self.get_object().id)
             return HttpResponseRedirect(reverse('user_list'))
         else:
             return super(PostUpdateView, self).post(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(PostUpdateView, self).get_context_data(**kwargs)
-        context['update'] = True
-        return context
 
 
 class PostCreateView(CreateView):
     model = Post
     template_name = "blogapp/update_create_post.html"
     form_class = PostForm
+    # initial = {'user': UserOwner.objects.all()[0]}
 
     def get_success_url(self):
-        messages.success(self.request, 'Post %s successfully created!' % self.object)
+        messages.success(self.request, 'Post #%s successfully created!' % self.object.id)
         return reverse('user_list')
 
     def post(self, request, *args, **kwargs):
@@ -109,9 +107,56 @@ class PostCreateView(CreateView):
         else:
             return super(PostCreateView, self).post(request, *args, **kwargs)
 
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        self.initial['user'] = self.request.user
+        print self.request.user
+        return self.initial.copy()
+
+class UserOwnerListView(ListView):
+    model=UserOwner
+    template_name="blogapp/users.html"
+    context_object_name='users'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(UserOwnerListView, self).get_context_data(**kwargs)
+    #     if self.object == self.request.user:
+    #         context['posts'] = self.object.blog.posts.all()
+    #     else:
+    #         context['posts'] = self.object.blog.posts.filter(is_posted=True)
+    #
+    #     return context
+
+
+class PostDetailView(DetailView):
+    model=Post
+    template_name="blogapp/post.html"
+    context_object_name='post'
+
+    def get(self, request, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_posted == False and self.object.user != self.request.user:
+            messages.error(self.request, 'You do not allow look unposted data of other users')
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+
+
+class UserOwnerDetailView(DetailView):
+    model=UserOwner
+    template_name="blogapp/user_posts.html"
+    context_object_name='userowner'
+
     def get_context_data(self, **kwargs):
-        context = super(PostCreateView, self).get_context_data(**kwargs)
-        context['update'] = False
+        context = super(UserOwnerDetailView, self).get_context_data(**kwargs)
+        if self.object == self.request.user:
+            context['posts'] = self.object.blog.posts.all()
+        else:
+            context['posts'] = self.object.blog.posts.filter(is_posted=True)
+
         return context
 
 

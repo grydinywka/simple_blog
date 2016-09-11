@@ -8,12 +8,16 @@ from custom_user.models import AbstractEmailUser
 class UserOwner(AbstractEmailUser):
     blog = models.OneToOneField('Blog', blank=True, null=True, default=None)
 
+
 class Blog(models.Model):
     title = models.CharField(max_length=250, blank=True, null=True, default=None)
     posts = models.ManyToManyField('Post', blank=True, default=None)
 
     def __str__(self):
         return "{}".format(self.title)
+
+    def get_is_posted(self):
+        return self.posts.filter(is_posted=True)
 
 
 class Post(models.Model):

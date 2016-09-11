@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'blogapp',
     'custom_user',
     'crispy_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -134,5 +135,6 @@ STATICFILES_DIRS = (
 
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/blog/users/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

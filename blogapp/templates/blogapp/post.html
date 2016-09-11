@@ -7,7 +7,14 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <p class="text-center"><a href="{% url 'user_posts' post.user.id %}">BACK</a></p>
+        {% if user == post.user %}
+        <a href="{% url 'post_update' post.id %}" type="button" class="btn btn-default">
+            Update The Post
+        </a>
+        {% endif %}
+    </div>
     <div class="col-md-6">
         <p><strong>Tille: </strong> {{ post.title }}</p>
         <p class="content"><strong>Content: </strong>{{ post.content }}</p>

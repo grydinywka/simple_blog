@@ -19,7 +19,9 @@
         <tr>
             <td>{{ user_.id }}</td>
             <td>{{ user_.email }}</td>
-            <td><a href="{% url 'user_posts' user_.id %}">value: {{ user_.blog.posts.all.count }}</a></td>
+            <td><a href="{% url 'user_posts' user_.id %}">
+                number of posted: {{ user_.blog.get_is_posted.count }} {% if user == user_ %}, number of all: {{user_.blog.posts.count }}{% endif %}
+            </a></td>
         </tr>
     {% endfor %}
     </tbody>
