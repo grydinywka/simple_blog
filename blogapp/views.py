@@ -26,7 +26,7 @@ from .forms import AuthenticationForm
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ['title', 'content', 'is_posted', 'user']
         exclude = ()
 
     def __init__(self, *args, **kwargs):
@@ -37,14 +37,14 @@ class PostForm(forms.ModelForm):
         # set form tag attributes
         if 'instance' in kwargs:
             if kwargs['instance']:
-                self.helper.form_action = reverse('students_edit',
-                    kwargs={'sid': kwargs['instance'].id})
+                self.helper.form_action = reverse('post_update',
+                    kwargs={'pk': kwargs['instance'].id})
             else:
-                self.helper.form_action = reverse('students_add')
+                self.helper.form_action = reverse('post_create')
         else:
-            self.helper.form_action = reverse('students_add')
+            self.helper.form_action = reverse('post_create')
         self.helper.form_method = 'POST'
-        self.helper.form_class = 'form-horizontal a'
+        self.helper.form_class = 'form-horizontal'
 
         # set form field properties
         self.helper.help_text_inline = True
@@ -56,20 +56,20 @@ class PostForm(forms.ModelForm):
         if 'instance' in kwargs:
             if kwargs['instance']:
                 self.helper.layout[-1] = FormActions(
-                    Submit('edit_button', _(u'Edit'), css_class="btn btn-primary"),
-                    Submit('cancel_button', _(u'Cancel'), css_class="btn btn-link")
+                    Submit('update_button', 'Update', css_class="btn btn-primary"),
+                    Submit('cancel_button', 'Cancel', css_class="btn btn-link")
                     )
             else:
                 self.helper.layout[-1] = FormActions(
-                    Submit('add_button', _(u'Add'), css_class="btn btn-primary"),
-                    Submit('cancel_button', _(u'Cancel'), css_class="btn btn-link")
+                    Submit('create_button', 'Create', css_class="btn btn-primary"),
+                    Submit('cancel_button', 'Cancel', css_class="btn btn-link")
                     )
         else:
             self.helper.layout[-1] = FormActions(
-                Submit('add_button', _(u'Add'), css_class="btn btn-primary"),
-                Submit('cancel_button', _(u'Cancel'), css_class="btn btn-link")
+                Submit('create_button', 'Create', css_class="btn btn-primary"),
+                Submit('cancel_button', 'Cancel', css_class="btn btn-link")
                 )
-
+    no_field = forms.CharField(required=False)
 
 class PostUpdateView(UpdateView):
     model = Post
