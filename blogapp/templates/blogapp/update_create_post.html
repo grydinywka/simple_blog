@@ -1,0 +1,25 @@
+{% extends "blogapp/base.html" %}
+{% load static from staticfiles %}
+
+{% block meta_title %}-{% if update %}Update Post #{{ object.id }}{% else %}Creating Post{% endif %}{% endblock meta_title %}
+
+{% block title %}{% if update %}Update Post #{{ object.id }}{% else %}Creating Post{% endif %}:{% endblock title %}
+
+{% block content %}
+<form action="
+	{% if update %}
+		{% url 'post_update' object.id %}
+	{% else %}
+	    {% url 'post_create' %}
+	{% endif %}" method="post" enctype="multipart/form-data" role="form" class="form-horizontal">
+
+		{% csrf_token %}
+
+		{{ form.as_p }}
+
+		<input type="submit" value="Submit" name="add_button"
+			   class="btn btn-primary" />
+		<button type="submit" name="cancel_button" value="Cancel"
+				class="btn btn-link">Cancel</button>
+</form>
+{% endblock content %}

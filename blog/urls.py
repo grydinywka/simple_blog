@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from blogapp.views import home, login
+from blogapp.views import login, PostUpdateView, PostCreateView
 from blogapp.models import UserOwner, Post
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,TemplateView,DetailView
@@ -35,5 +35,7 @@ urlpatterns = [
     url(r'^blog/(?P<pk>\d+)/$', login_required(DetailView.as_view(model=Post,
                                                          template_name="blogapp/post.html",
                                                          context_object_name='post')), name="post"),
+    url(r'^blog/(?P<pk>\d+)/update/$', login_required(PostUpdateView.as_view()), name="post_update"),
+    url(r'^blog/create/$', login_required(PostCreateView.as_view()), name="post_create"),
     url(r'^admin/', admin.site.urls),
 ]

@@ -4,3 +4,11 @@
     margin-top: 20px;
     padding-right: 30px;
 }
+
+.content {
+    white-space: pre-wrap;
+}
+
+#header {
+    margin-bottom: 20px;
+}
