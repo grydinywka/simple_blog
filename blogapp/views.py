@@ -72,6 +72,13 @@ class PostForm(forms.ModelForm):
                 )
     no_field = forms.CharField(required=False)
 
+    # def clean(self):
+    #     cleaned_data = super(PostForm, self).clean()
+    #     userowner = cleaned_data.get('user')
+    #     if userowner:
+    #         if userowner != self.request.user:
+    #             raise forms.ValidationError('Please, choose {}'.format(self.request.user))
+
 
 class PostUpdateView(UpdateView):
     model = Post
@@ -88,6 +95,13 @@ class PostUpdateView(UpdateView):
             return HttpResponseRedirect(reverse('user_list'))
         else:
             return super(PostUpdateView, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if form.cleaned_data['user'] != self.request.user:
+            messages.error(self.request, 'Please, choose {}'.format(self.request.user))
+            form.errors['user'] = 'e'
+            return self.render_to_response(self.get_context_data(form=form))
+        return super(PostUpdateView, self).form_valid(form)
 
 
 class PostCreateView(CreateView):
@@ -112,8 +126,16 @@ class PostCreateView(CreateView):
         Returns the initial data to use for forms on this view.
         """
         self.initial['user'] = self.request.user
-        print self.request.user
+        # print self.request.user
         return self.initial.copy()
+
+    def form_valid(self, form):
+        if form.cleaned_data['user'] != self.request.user:
+            messages.error(self.request, 'Please, choose {}'.format(self.request.user))
+            form.errors['user'] = 'e'
+            return self.render_to_response(self.get_context_data(form=form))
+        return super(PostCreateView, self).form_valid(form)
+
 
 class UserOwnerListView(ListView):
     model=UserOwner
