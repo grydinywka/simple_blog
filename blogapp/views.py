@@ -132,7 +132,7 @@ class PostCreateView(CreateView):
     def form_valid(self, form):
         if form.cleaned_data['user'] != self.request.user:
             messages.error(self.request, 'Please, choose {}'.format(self.request.user))
-            form.errors['user'] = 'e'
+            form.errors['user'] = ['choose other user']
             return self.render_to_response(self.get_context_data(form=form))
         return super(PostCreateView, self).form_valid(form)
 
